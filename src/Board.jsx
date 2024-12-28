@@ -3,13 +3,13 @@ import React from 'react';
 export function TicTacToeBoard({ ctx, G, moves }) {
   const onClick = (id) => moves.clickCell(id);
 
-  let winner = '';
+  let loser = '';
   if (ctx.gameover) {
-    winner =
-      ctx.gameover.winner !== undefined ? (
-        <div id="winner">Winner: {ctx.gameover.winner}</div>
+    loser =
+      ctx.gameover.loser !== undefined ? (
+        <div id="loser">loser: {ctx.gameover.loser}</div>
       ) : (
-        <div id="winner">Draw!</div>
+        <div id="loser">Draw!</div>
       );
   }
 
@@ -22,10 +22,10 @@ export function TicTacToeBoard({ ctx, G, moves }) {
   };
 
   let tbody = [];
-  for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < 8; i++) {
     let cells = [];
-    for (let j = 0; j < 3; j++) {
-      const id = 3 * i + j;
+    for (let j = 0; j < 8; j++) {
+      const id = 8 * i + j;
       cells.push(
         <td key={id}>
           {G.cells[id] ? (
@@ -44,7 +44,7 @@ export function TicTacToeBoard({ ctx, G, moves }) {
       <table id="board">
         <tbody>{tbody}</tbody>
       </table>
-      {winner}
+      {loser}
     </div>
   );
 }
