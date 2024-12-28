@@ -1,36 +1,42 @@
 import { INVALID_MOVE } from 'boardgame.io/core';
 
 
-function IsVictory(cells) {
+function IsVictory(cells, playerID) {
   //左上から走査するので、右・下向きだけでOK
+  var winner = []
   for (let i = 0; i < 64; i++) {
     if (cells[i] != null) {
       //真横勝利判定
       if (i % 8 < 4) {
         if (cells[i + 1] == cells[i] && cells[i + 2] == cells[i] && cells[i + 3] == cells[i]) {
-          return cells[i]
+          winner.push(cells[i])
         }
       }
       //斜め右下勝利判定
       if (i % 8 < 4 && i < 40) {
         if (cells[i + 9] == cells[i] && cells[i + 18] == cells[i] && cells[i + 27] == cells[i]) {
-          return cells[i]
+          winner.push(cells[i])
         }
       }
 
       //斜め左下勝利判定
       if (i % 8 > 3 && i < 40) {
         if (cells[i + 7] == cells[i] && cells[i + 14] == cells[i] && cells[i + 21] == cells[i]) {
-          return cells[i]
+          winner.push(cells[i])
         }
       }
       //縦勝利判定
       if (i < 40) {
         if (cells[i + 8] == cells[i] && cells[i + 16] == cells[i] && cells[i + 24] == cells[i]) {
-          return cells[i]
+          winner.push(cells[i])
         }
       }
     }
+  }
+  if (winner.includes(playerID)) {
+    return playerID
+  } else {
+    return winner[0]
   }
 }
 
@@ -108,7 +114,24 @@ function CheckPutInvalid(cell, id, playerID) {
   }
   return true
 }
-function IsInvalidMove(cell, id, playerID) {
+function IsInvalidMove(cell, id, playerID, turn) {
+  if (turn == 1) {
+    //一番外周にはおけない
+    if (id < 8) {
+      //上の辺
+      return true
+    } else if (id % 8 == 0) {
+      //左の辺
+      return true
+    } else if (id % 8 == 7) {
+      //右の辺
+      return true
+    } else if (id > 55) {
+      //下の辺
+      return true
+    }
+    return false
+  }
   if (cell[id] != null) {
     return true
   }
@@ -163,13 +186,9 @@ export const TicTacToe = {
 
   moves: {
     clickCell: ({ G, ctx, playerID }, id) => {
-      console.log(ctx)
-      if (ctx.turn == 1) {
 
-      } else {
-        if (IsInvalidMove(G.cells, id, playerID)) {
-          return INVALID_MOVE
-        }
+      if (IsInvalidMove(G.cells, id, playerID, ctx.turn)) {
+        return INVALID_MOVE
       }
       G.cells[id] = playerID;
       MovePieces(G.cells, id, playerID)
@@ -178,12 +197,23 @@ export const TicTacToe = {
   },
 
   endIf: ({ G, ctx }) => {
-    var loser = IsVictory(G.cells)
+    var loser = IsVictory(G.cells, ctx.currentPlayer)
     if (loser) {
-      return { loser: loser};
+      return { loser: loser };
     }
     if (IsDraw(G.cells)) {
       return { draw: true };
     }
   },
+  ai: {
+    enumerate: (G, ctx) => {
+      let moves = [];
+      for (let i = 0; i < 64; i++) {
+        if (IsInvalidMove(G.cells, i, ctx.currentPlayer, ctx.turn) != true) {
+          moves.push({ move: 'clickCell', args: [i] });
+        }
+      }
+      return moves;
+    }
+  }
 };
