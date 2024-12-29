@@ -25,7 +25,7 @@ function IsVictory(cells, playerID) {
       }
 
       //斜め左下勝利判定
-      if (i % 8 > 3 && i < 40) {
+      if (i % 8 > 2 && i < 40) {
         if (cells[i + 7] == cells[i] && cells[i + 14] == cells[i] && cells[i + 21] == cells[i]) {
           loser.push(cells[i])
         }
