@@ -39,7 +39,7 @@ function IsVictory(cells, playerID) {
     }
   }
   if (loser.includes(playerID)) {
-
+    loserFlag = playerID
     return false
   } else if(loser[0]) {
     return true
