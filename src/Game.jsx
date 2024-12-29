@@ -12,13 +12,13 @@ function IsVictory(cells, playerID) {
   for (let i = 0; i < 64; i++) {
     if (cells[i] != null) {
       //真横勝利判定
-      if (i % 8 < 4) {
+      if (i % 8 < 5) {
         if (cells[i + 1] == cells[i] && cells[i + 2] == cells[i] && cells[i + 3] == cells[i]) {
           loser.push(cells[i])
         }
       }
       //斜め右下勝利判定
-      if (i % 8 < 4 && i < 40) {
+      if (i % 8 < 5 && i < 40) {
         if (cells[i + 9] == cells[i] && cells[i + 18] == cells[i] && cells[i + 27] == cells[i]) {
           loser.push(cells[i])
         }
@@ -38,6 +38,7 @@ function IsVictory(cells, playerID) {
       }
     }
   }
+  console.log(loser+" Playing: " +playerID)
   if (loser.includes(playerID)) {
     loserFlag = playerID
     return false
@@ -166,7 +167,7 @@ function MovePieces(cell, id, playerID) {
     }
   }
   //左方向
-  if (id % 8 > 2) {
+  if (id % 8 > 1) {
     if (cell[id - 1] != null && cell[id - 1] != playerID && cell[id - 2] == null) {
       cell[id - 2] = cell[id - 1]
       cell[id - 1] = null
@@ -203,7 +204,6 @@ export const TicTacToe = {
   },
 
   endIf: ({ G, ctx }) => {
-    console.log(ctx)
     if (IsVictory(G.cells, ctx.currentPlayer)) {
       return { winner: ctx.currentPlayer };
     }
