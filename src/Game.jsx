@@ -38,7 +38,6 @@ function IsVictory(cells, playerID) {
       }
     }
   }
-  console.log(loser+" Playing: " +playerID)
   if (loser.includes(playerID)) {
     loserFlag = playerID
     return false
@@ -108,7 +107,7 @@ function CheckPutInvalid(cell, id, playerID) {
     }
   }
   //左方向
-  if (id % 8 > 2) {
+  if (id % 8 > 1) {
     if (cell[id - 1] != null && cell[id - 1] != playerID && cell[id - 2] == null) {
       return false
     }
