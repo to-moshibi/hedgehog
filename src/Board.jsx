@@ -1,15 +1,18 @@
 import React from 'react';
-
+import { CpuMove } from './Cpu';
+let turn = 0
+let cpu_id = 1
 export function TicTacToeBoard({ ctx, G, moves }) {
   const onClick = (id) => moves.clickCell(id);
-
-  let loser = '';
+  
+  CheckChangeTurn(ctx,G,moves)
+  let winner = '';
   if (ctx.gameover) {
-    loser =
-      ctx.gameover.loser !== undefined ? (
-        <div id="loser">loser: {ctx.gameover.loser}</div>
+    winner =
+      ctx.gameover.winner !== undefined ? (
+        <div id="winner">winner: {ctx.gameover.winner}</div>
       ) : (
-        <div id="loser">Draw!</div>
+        <div id="winner">Draw!</div>
       );
   }
 
@@ -44,7 +47,18 @@ export function TicTacToeBoard({ ctx, G, moves }) {
       <table id="board">
         <tbody>{tbody}</tbody>
       </table>
-      {loser}
+      {winner}
     </div>
   );
+
+  function CheckChangeTurn(ctx,G,moves){
+    if(ctx.turn != turn){
+      console.log("new turn")
+      turn = ctx.turn
+      if(ctx.currentPlayer == cpu_id){
+        console.log("cpu turn")
+        CpuMove(ctx,G,moves)
+      }
+    }
+  }
 }

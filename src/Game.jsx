@@ -1,42 +1,48 @@
 import { INVALID_MOVE } from 'boardgame.io/core';
 
-
+let loserFlag = null
 function IsVictory(cells, playerID) {
   //左上から走査するので、右・下向きだけでOK
-  var winner = []
+  if(loserFlag !=null && loserFlag != playerID){
+    console.log("loserFlag")
+    loserFlag = null
+    return true
+  }
+  var loser = []
   for (let i = 0; i < 64; i++) {
     if (cells[i] != null) {
       //真横勝利判定
       if (i % 8 < 4) {
         if (cells[i + 1] == cells[i] && cells[i + 2] == cells[i] && cells[i + 3] == cells[i]) {
-          winner.push(cells[i])
+          loser.push(cells[i])
         }
       }
       //斜め右下勝利判定
       if (i % 8 < 4 && i < 40) {
         if (cells[i + 9] == cells[i] && cells[i + 18] == cells[i] && cells[i + 27] == cells[i]) {
-          winner.push(cells[i])
+          loser.push(cells[i])
         }
       }
 
       //斜め左下勝利判定
       if (i % 8 > 3 && i < 40) {
         if (cells[i + 7] == cells[i] && cells[i + 14] == cells[i] && cells[i + 21] == cells[i]) {
-          winner.push(cells[i])
+          loser.push(cells[i])
         }
       }
       //縦勝利判定
       if (i < 40) {
         if (cells[i + 8] == cells[i] && cells[i + 16] == cells[i] && cells[i + 24] == cells[i]) {
-          winner.push(cells[i])
+          loser.push(cells[i])
         }
       }
     }
   }
-  if (winner.includes(playerID)) {
-    return playerID
-  } else {
-    return winner[0]
+  if (loser.includes(playerID)) {
+
+    return false
+  } else if(loser[0]) {
+    return true
   }
 }
 
@@ -197,9 +203,9 @@ export const TicTacToe = {
   },
 
   endIf: ({ G, ctx }) => {
-    var loser = IsVictory(G.cells, ctx.currentPlayer)
-    if (loser) {
-      return { loser: loser };
+    console.log(ctx)
+    if (IsVictory(G.cells, ctx.currentPlayer)) {
+      return { winner: ctx.currentPlayer };
     }
     if (IsDraw(G.cells)) {
       return { draw: true };
