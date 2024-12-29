@@ -1,9 +1,10 @@
 import React from 'react';
 import { CpuMove } from './Cpu';
-import { IsInvalidMove } from './Game';
+import { IsInvalidMove, getLastMove } from './Game';
 let turn = 0
 let cpu_id = 1
 export function TicTacToeBoard({ ctx, G, moves }) {
+  console.log(ctx)
   const onClick = (id) => moves.clickCell(id);
   
   CheckChangeTurn(ctx,G,moves)
@@ -30,15 +31,28 @@ export function TicTacToeBoard({ ctx, G, moves }) {
     let cells = [];
     for (let j = 0; j < 8; j++) {
       const id = 8 * i + j;
-      cells.push(
-        <td key={id}>
-          {G.cells[id] ? (
-            <div style={cellStyle} className={"color"+G.cells[id]}>{G.cells[id]}</div>
-          ) : (
-            <button style={cellStyle} onClick={() => onClick(id)} className={"prohibit"+IsInvalidMove(G.cells, id, ctx.currentPlayer, ctx.turn)}/>
-          )}
-        </td>
-      );
+      if(id == getLastMove()){
+        cells.push(
+          <td key={id}>
+            {G.cells[id] ? (
+              <div style={cellStyle} className={"color"+G.cells[id]} id="lastmove">{G.cells[id]}</div>
+            ) : (
+              <button style={cellStyle} onClick={() => onClick(id)} className={"prohibit"+IsInvalidMove(G.cells, id, ctx.currentPlayer, ctx.turn)}/>
+            )}
+          </td>
+        );
+      }else{
+        cells.push(
+          <td key={id}>
+            {G.cells[id] ? (
+              <div style={cellStyle} className={"color"+G.cells[id]} >{G.cells[id]}</div>
+            ) : (
+              <button style={cellStyle} onClick={() => onClick(id)} className={"prohibit"+IsInvalidMove(G.cells, id, ctx.currentPlayer, ctx.turn)}/>
+            )}
+          </td>
+        );
+      }
+
     }
     tbody.push(<tr key={i}>{cells}</tr>);
   }

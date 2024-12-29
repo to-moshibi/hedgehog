@@ -1,6 +1,11 @@
 import { INVALID_MOVE } from 'boardgame.io/core';
 
 let loserFlag = null
+let lastMove = null
+
+export function getLastMove(){
+  return lastMove
+}
 function IsVictory(cells, playerID) {
   //左上から走査するので、右・下向きだけでOK
   if(loserFlag !=null && loserFlag != playerID){
@@ -197,6 +202,7 @@ export const TicTacToe = {
         return INVALID_MOVE
       }
       G.cells[id] = playerID;
+      lastMove = id
       MovePieces(G.cells, id, playerID)
 
     },
