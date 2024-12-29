@@ -1,5 +1,6 @@
 import React from 'react';
 import { CpuMove } from './Cpu';
+import { IsInvalidMove } from './Game';
 let turn = 0
 let cpu_id = 1
 export function TicTacToeBoard({ ctx, G, moves }) {
@@ -34,7 +35,7 @@ export function TicTacToeBoard({ ctx, G, moves }) {
           {G.cells[id] ? (
             <div style={cellStyle} className={"color"+G.cells[id]}>{G.cells[id]}</div>
           ) : (
-            <button style={cellStyle} onClick={() => onClick(id)} />
+            <button style={cellStyle} onClick={() => onClick(id)} className={"prohibit"+IsInvalidMove(G.cells, id, ctx.currentPlayer, ctx.turn)}/>
           )}
         </td>
       );

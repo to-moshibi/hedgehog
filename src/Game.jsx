@@ -120,7 +120,7 @@ function CheckPutInvalid(cell, id, playerID) {
   }
   return true
 }
-function IsInvalidMove(cell, id, playerID, turn) {
+export function IsInvalidMove(cell, id, playerID, turn) {
   if (turn == 1) {
     //一番外周にはおけない
     if (id < 8) {
