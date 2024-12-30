@@ -1,13 +1,17 @@
 import React from 'react';
 import { CpuMove } from './Cpu';
-import { IsInvalidMove, getLastMove } from './Game';
+import { IsInvalidMove, getLastMove, pushCellHistory, getCellHistory, actualTurn } from './Game';
 let turn = 0
 let cpu_id = 1
-export function TicTacToeBoard({ ctx, G, moves }) {
-  console.log(ctx)
+export function TicTacToeBoard({ ctx, G, moves, }) {
   const onClick = (id) => moves.clickCell(id);
-  
-  CheckChangeTurn(ctx,G,moves)
+
+  if (CheckChangeTurn(actualTurn)) {
+    var cellHistory = getCellHistory()
+    if (cellHistory[cellHistory.length - 1] != G.cells) {
+      pushCellHistory(G.cells)
+    }
+  }
   let winner = '';
   if (ctx.gameover) {
     winner =
@@ -31,23 +35,23 @@ export function TicTacToeBoard({ ctx, G, moves }) {
     let cells = [];
     for (let j = 0; j < 8; j++) {
       const id = 8 * i + j;
-      if(id == getLastMove()){
+      if (id == getLastMove()) {
         cells.push(
           <td key={id}>
             {G.cells[id] ? (
-              <div style={cellStyle} className={"color"+G.cells[id]} id="lastmove">{G.cells[id]}</div>
+              <div style={cellStyle} className={"color" + G.cells[id]} id="lastmove">{G.cells[id]}</div>
             ) : (
-              <button style={cellStyle} onClick={() => onClick(id)} className={"prohibit"+IsInvalidMove(G.cells, id, ctx.currentPlayer, ctx.turn)}/>
+              <button style={cellStyle} onClick={() => onClick(id)} className={"prohibit" + IsInvalidMove(G.cells, id, ctx.currentPlayer, ctx.turn)} />
             )}
           </td>
         );
-      }else{
+      } else {
         cells.push(
           <td key={id}>
             {G.cells[id] ? (
-              <div style={cellStyle} className={"color"+G.cells[id]} >{G.cells[id]}</div>
+              <div style={cellStyle} className={"color" + G.cells[id]} >{G.cells[id]}</div>
             ) : (
-              <button style={cellStyle} onClick={() => onClick(id)} className={"prohibit"+IsInvalidMove(G.cells, id, ctx.currentPlayer, ctx.turn)}/>
+              <button style={cellStyle} onClick={() => onClick(id)} className={"prohibit" + IsInvalidMove(G.cells, id, ctx.currentPlayer, ctx.turn)} />
             )}
           </td>
         );
@@ -59,6 +63,8 @@ export function TicTacToeBoard({ ctx, G, moves }) {
 
   return (
     <div>
+      <button onClick={() => moves.undo()}>UNDO</button>
+      <button onClick={() => moves.redo()}>REDO</button>
       <table id="board">
         <tbody>{tbody}</tbody>
       </table>
@@ -66,14 +72,11 @@ export function TicTacToeBoard({ ctx, G, moves }) {
     </div>
   );
 
-  function CheckChangeTurn(ctx,G,moves){
-    if(ctx.turn != turn){
-      console.log("new turn")
-      turn = ctx.turn
-      if(ctx.currentPlayer == cpu_id){
-        console.log("cpu turn")
-        CpuMove(ctx,G,moves)
-      }
+  function CheckChangeTurn(actualTurn) {
+    if (actualTurn != turn) {
+      turn = actualTurn
+      return true
     }
+    return false
   }
 }

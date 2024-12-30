@@ -2,14 +2,24 @@ import { INVALID_MOVE } from 'boardgame.io/core';
 
 let loserFlag = null
 let lastMove = null
+let cellHistory = [Array(64).fill(null)]
+let undoNum = 0
+let totalUndo = 0
+export let actualTurn = 0
 
-export function getLastMove(){
+export function pushCellHistory(cell) {
+  cellHistory.push(cell)
+}
+
+export function getCellHistory() {
+  return cellHistory
+}
+export function getLastMove() {
   return lastMove
 }
 function IsVictory(cells, playerID) {
   //左上から走査するので、右・下向きだけでOK
-  if(loserFlag !=null && loserFlag != playerID){
-    console.log("loserFlag")
+  if (loserFlag != null && loserFlag != playerID) {
     loserFlag = null
     return true
   }
@@ -46,7 +56,7 @@ function IsVictory(cells, playerID) {
   if (loser.includes(playerID)) {
     loserFlag = playerID
     return false
-  } else if(loser[0]) {
+  } else if (loser[0]) {
     return true
   }
 }
@@ -125,8 +135,12 @@ function CheckPutInvalid(cell, id, playerID) {
   }
   return true
 }
+function IsCellNull(cell) {
+  const isNull = (item) => item == null
+  return cell.every(isNull)
+}
 export function IsInvalidMove(cell, id, playerID, turn) {
-  if (turn == 1) {
+  if (IsCellNull(cell)) {
     //一番外周にはおけない
     if (id < 8) {
       //上の辺
@@ -196,16 +210,42 @@ export const TicTacToe = {
   },
 
   moves: {
-    clickCell: ({ G, ctx, playerID }, id) => {
+    clickCell: {
+      move: ({ G, ctx, playerID }, id) => {
 
-      if (IsInvalidMove(G.cells, id, playerID, ctx.turn)) {
-        return INVALID_MOVE
-      }
-      G.cells[id] = playerID;
-      lastMove = id
-      MovePieces(G.cells, id, playerID)
+        if (IsInvalidMove(G.cells, id, playerID, ctx.turn)) {
+          return INVALID_MOVE
+        }
 
+        G.cells[id] = playerID;
+        lastMove = id
+        MovePieces(G.cells, id, playerID)
+        if(undoNum !=0){
+          cellHistory.splice(ctx.turn - (totalUndo - undoNum) * 2 - undoNum*2)
+        }
+        undoNum = 0
+        actualTurn = ctx.turn - (totalUndo - undoNum) * 2
+      },
     },
+    undo: {
+      move: ({ G }) => {
+        if (actualTurn - undoNum -1 < 0) {
+          return INVALID_MOVE
+        }
+        undoNum += 1
+        totalUndo += 1
+        G.cells = cellHistory[Math.max(actualTurn - undoNum, 0)]
+      },
+    },
+    redo: {
+      move: ({ G }) => {
+        if (undoNum - 1 < 0) {
+          return INVALID_MOVE
+        }
+        undoNum -= 1
+        G.cells = cellHistory[Math.max(actualTurn - undoNum, 0)]
+      },
+    }
   },
 
   endIf: ({ G, ctx }) => {
