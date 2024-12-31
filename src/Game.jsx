@@ -2,10 +2,22 @@ import { INVALID_MOVE } from 'boardgame.io/core';
 
 let loserFlag = null
 let lastMove = null
-let cellHistory = [Array(64).fill(null)]
+export let cellHistory = [Array(64).fill(null)]
 let undoNum = 0
 let totalUndo = 0
 export let actualTurn = 0
+
+
+
+export function PossibleMoves(cell,currentPlayer){
+  let moves = [];
+  for (let i = 0; i < 64; i++) {
+    if (IsInvalidMove(cell, i, currentPlayer) != true) {
+      moves.push({ move: 'clickCell', args: [i] });
+    }
+  }
+  return moves;
+}
 
 export function pushCellHistory(cell) {
   cellHistory.push(cell)
@@ -16,6 +28,15 @@ export function getCellHistory() {
 }
 export function getLastMove() {
   return lastMove
+}
+
+export function getWinner(cells, playerID) {
+  if(IsVictory(cells, playerID)){
+    return playerID
+  }else if(loserFlag != null){
+    return loserFlag === 0 ? 1 : 0
+  }
+  return false
 }
 function IsVictory(cells, playerID) {
   //左上から走査するので、右・下向きだけでOK
@@ -62,7 +83,7 @@ function IsVictory(cells, playerID) {
 }
 
 // Return true if all `cells` are occupied.
-function IsDraw(cells) {
+export function IsDraw(cells) {
   return cells.filter(c => c === null).length === 0;
 }
 
@@ -139,7 +160,7 @@ function IsCellNull(cell) {
   const isNull = (item) => item == null
   return cell.every(isNull)
 }
-export function IsInvalidMove(cell, id, playerID, turn) {
+export function IsInvalidMove(cell, id, playerID) {
   if (IsCellNull(cell)) {
     //一番外周にはおけない
     if (id < 8) {
@@ -169,7 +190,9 @@ export function IsInvalidMove(cell, id, playerID, turn) {
 
 }
 
-function MovePieces(cell, id, playerID) {
+export function MovePieces(cell, id, playerID) {
+  loserFlag = null
+  cell[id] = playerID;
   //上方向
   if (id > 15) {
     if (cell[id - 8] != null && cell[id - 8] != playerID && cell[id - 16] == null) {
@@ -201,7 +224,7 @@ function MovePieces(cell, id, playerID) {
 
 }
 
-export const TicTacToe = {
+export const Hedgehog = {
   setup: () => ({ cells: Array(64).fill(null) }),
 
   turn: {
@@ -213,11 +236,11 @@ export const TicTacToe = {
     clickCell: {
       move: ({ G, ctx, playerID }, id) => {
 
-        if (IsInvalidMove(G.cells, id, playerID, ctx.turn)) {
+        if (IsInvalidMove(G.cells, id, playerID)) {
           return INVALID_MOVE
         }
 
-        G.cells[id] = playerID;
+        
         lastMove = id
         MovePieces(G.cells, id, playerID)
         if(undoNum !=0){
@@ -229,6 +252,7 @@ export const TicTacToe = {
     },
     undo: {
       move: ({ G }) => {
+        loserFlag = null
         if (actualTurn - undoNum -1 < 0) {
           return INVALID_MOVE
         }
@@ -239,6 +263,7 @@ export const TicTacToe = {
     },
     redo: {
       move: ({ G }) => {
+        loserFlag = null
         if (undoNum - 1 < 0) {
           return INVALID_MOVE
         }
@@ -258,13 +283,7 @@ export const TicTacToe = {
   },
   ai: {
     enumerate: (G, ctx) => {
-      let moves = [];
-      for (let i = 0; i < 64; i++) {
-        if (IsInvalidMove(G.cells, i, ctx.currentPlayer, ctx.turn) != true) {
-          moves.push({ move: 'clickCell', args: [i] });
-        }
-      }
-      return moves;
+      return PossibleMoves(G.cells,ctx.currentPlayer)
     }
   }
 };

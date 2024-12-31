@@ -1,17 +1,31 @@
 import React from 'react';
-import { CpuMove } from './Cpu';
+import { getMCTSMove } from './Cpu';
 import { IsInvalidMove, getLastMove, pushCellHistory, getCellHistory, actualTurn } from './Game';
-let turn = 0
-let cpu_id = 1
-export function TicTacToeBoard({ ctx, G, moves, }) {
-  const onClick = (id) => moves.clickCell(id);
+let turn = 0;
+let cpu_id = 1;
 
-  if (CheckChangeTurn(actualTurn)) {
-    var cellHistory = getCellHistory()
-    if (cellHistory[cellHistory.length - 1] != G.cells) {
-      pushCellHistory(G.cells)
-    }
-  }
+export function HedgehogBoard({ ctx, G, moves }) {
+  const onClick = (id) => moves.clickCell(id);
+  React.useEffect(() => {
+    console.log("HedgehogBoard useEffect")
+    const makeCpuMove = async () => {
+      if (CheckChangeTurn(actualTurn)) {
+        var cellHistory = getCellHistory();
+        if (cellHistory[cellHistory.length - 1] !== G.cells) {
+          pushCellHistory(G.cells);
+          if (ctx.currentPlayer == cpu_id) {
+            if (!ctx.gameover) {
+              const move = await getMCTSMove(cpu_id, 1000);
+              moves.clickCell(move); // CPU move
+            }
+          }
+        }
+      }
+    };
+
+    makeCpuMove();
+  }, [ctx, G, moves]);
+
   let winner = '';
   if (ctx.gameover) {
     winner =
@@ -41,7 +55,7 @@ export function TicTacToeBoard({ ctx, G, moves, }) {
             {G.cells[id] ? (
               <div style={cellStyle} className={"color" + G.cells[id]} id="lastmove">{G.cells[id]}</div>
             ) : (
-              <button style={cellStyle} onClick={() => onClick(id)} className={"prohibit" + IsInvalidMove(G.cells, id, ctx.currentPlayer, ctx.turn)} />
+              <button style={cellStyle} onClick={() => onClick(id)} className={"prohibit" + IsInvalidMove(G.cells, id, ctx.currentPlayer)} />
             )}
           </td>
         );
@@ -51,7 +65,7 @@ export function TicTacToeBoard({ ctx, G, moves, }) {
             {G.cells[id] ? (
               <div style={cellStyle} className={"color" + G.cells[id]} >{G.cells[id]}</div>
             ) : (
-              <button style={cellStyle} onClick={() => onClick(id)} className={"prohibit" + IsInvalidMove(G.cells, id, ctx.currentPlayer, ctx.turn)} />
+              <button style={cellStyle} onClick={() => onClick(id)} className={"prohibit" + IsInvalidMove(G.cells, id, ctx.currentPlayer)} />
             )}
           </td>
         );

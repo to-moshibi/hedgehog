@@ -3,19 +3,19 @@
 import React from 'react';
 import { Client } from 'boardgame.io/react';
 import { Local } from 'boardgame.io/multiplayer';
-import { TicTacToe } from './Game';
-import { TicTacToeBoard } from './Board';
+import { Hedgehog } from './Game';
+import { HedgehogBoard } from './Board';
 
-const TicTacToeClient = Client({
-  game: TicTacToe,
-  board: TicTacToeBoard,
+const HedgehogClient = Client({
+  game: Hedgehog,
+  board: HedgehogBoard,
   // multiplayer: Local(),
 });
 
 const App = () => (
   <div>
-    <TicTacToeClient/>
-    {/* <TicTacToeClient playerID="1" /> */}
+    <HedgehogClient/>
+    {/* <HedgehogClient playerID="1" /> */}
   </div>
 );
 
