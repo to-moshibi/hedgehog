@@ -28,9 +28,13 @@ class HedgehogState {
 
     getResult(player) {
         const winner = this.getWinner();
-        if (winner === player) return 1;
-        if (winner === 1 - player) return -1;
-        return 0;
+        if (winner == player) {
+            return 1;
+        };
+        if (winner == 1 - player){
+            return 0;
+        };
+        return 0.5;
     }
 
     equals(otherState) {
@@ -74,6 +78,7 @@ Node.prototype.selectChild = function () {
         return n.wins / n.visits +
             c * Math.sqrt(Math.log(totalVisits) / n.visits);
     });
+    console.log(Math.max.apply(null, values))
     return this.childNodes[values.indexOf(Math.max.apply(null, values))];
 };
 
