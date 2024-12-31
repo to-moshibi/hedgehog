@@ -2,12 +2,13 @@ import React from 'react';
 import { getMCTSMove } from './Cpu';
 import { IsInvalidMove, getLastMove, pushCellHistory, getCellHistory, actualTurn } from './Game';
 let turn = 0;
-let cpu_id = 1;
+export let cpu_id = 1;
 
 export function HedgehogBoard({ ctx, G, moves }) {
-  const onClick = (id) => moves.clickCell(id);
+  const onClick = (id) => {
+    moves.clickCell(id)
+  };
   React.useEffect(() => {
-    console.log("HedgehogBoard useEffect")
     const makeCpuMove = async () => {
       if (CheckChangeTurn(actualTurn)) {
         var cellHistory = getCellHistory();
@@ -15,7 +16,7 @@ export function HedgehogBoard({ ctx, G, moves }) {
           pushCellHistory(G.cells);
           if (ctx.currentPlayer == cpu_id) {
             if (!ctx.gameover) {
-              const move = await getMCTSMove(cpu_id, 1000);
+              const move = await getMCTSMove(cpu_id, 2000);
               moves.clickCell(move); // CPU move
             }
           }
@@ -55,7 +56,7 @@ export function HedgehogBoard({ ctx, G, moves }) {
             {G.cells[id] ? (
               <div style={cellStyle} className={"color" + G.cells[id]} id="lastmove">{G.cells[id]}</div>
             ) : (
-              <button style={cellStyle} onClick={() => onClick(id)} className={"prohibit" + IsInvalidMove(G.cells, id, ctx.currentPlayer)} />
+              <button style={cellStyle} id={"cell"+id} onClick={() => onClick(id)} className={"prohibit" + IsInvalidMove(G.cells, id, ctx.currentPlayer)} />
             )}
           </td>
         );
@@ -65,7 +66,7 @@ export function HedgehogBoard({ ctx, G, moves }) {
             {G.cells[id] ? (
               <div style={cellStyle} className={"color" + G.cells[id]} >{G.cells[id]}</div>
             ) : (
-              <button style={cellStyle} onClick={() => onClick(id)} className={"prohibit" + IsInvalidMove(G.cells, id, ctx.currentPlayer)} />
+              <button style={cellStyle} id={"cell"+id} onClick={() => onClick(id,this)} className={"prohibit" + IsInvalidMove(G.cells, id, ctx.currentPlayer)} />
             )}
           </td>
         );

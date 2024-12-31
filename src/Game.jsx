@@ -270,7 +270,7 @@ export const Hedgehog = {
         undoNum -= 1
         G.cells = cellHistory[Math.max(actualTurn - undoNum, 0)]
       },
-    }
+    },
   },
 
   endIf: ({ G, ctx }) => {
