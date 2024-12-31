@@ -6,7 +6,7 @@ import { Local } from 'boardgame.io/multiplayer';
 import { Hedgehog } from './Game';
 import { HedgehogBoard } from './Board';
 
-const HedgehogClient = Client({
+export const HedgehogClient = Client({
   game: Hedgehog,
   board: HedgehogBoard,
   // multiplayer: Local(),
