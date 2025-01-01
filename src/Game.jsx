@@ -2,10 +2,24 @@ import { INVALID_MOVE } from 'boardgame.io/core';
 
 let loserFlag = null
 let lastMove = null
-let cellHistory = [Array(64).fill(null)]
+export let cellHistory = [Array(64).fill(null)]
 let undoNum = 0
 let totalUndo = 0
 export let actualTurn = 0
+
+export function resetLoserFlag() {
+  loserFlag = null
+}
+
+export function PossibleMoves(cell,currentPlayer){
+  let moves = [];
+  for (let i = 0; i < 64; i++) {
+    if (IsInvalidMove(cell, i, currentPlayer) != true) {
+      moves.push({ move: 'clickCell', args: [i] });
+    }
+  }
+  return moves;
+}
 
 export function pushCellHistory(cell) {
   cellHistory.push(cell)
@@ -17,6 +31,56 @@ export function getCellHistory() {
 export function getLastMove() {
   return lastMove
 }
+
+export function getWinner(cells,playerID){
+  
+  if(CpuVictory(cells, playerID)){
+    return playerID
+  }
+  if(CpuVictory(cells, 1 - playerID)){  
+    return 1 - playerID
+  }
+  return -1
+}
+
+function CpuVictory(cells, playerID) {
+  
+  var loser = []
+  for (let i = 0; i < 64; i++) {
+    if (cells[i] != null) {
+      //真横勝利判定
+      if (i % 8 < 5) {
+        if (cells[i + 1] == cells[i] && cells[i + 2] == cells[i] && cells[i + 3] == cells[i]) {
+          loser.push(cells[i])
+        }
+      }
+      //斜め右下勝利判定
+      if (i % 8 < 5 && i < 40) {
+        if (cells[i + 9] == cells[i] && cells[i + 18] == cells[i] && cells[i + 27] == cells[i]) {
+          loser.push(cells[i])
+        }
+      }
+
+      //斜め左下勝利判定
+      if (i % 8 > 2 && i < 40) {
+        if (cells[i + 7] == cells[i] && cells[i + 14] == cells[i] && cells[i + 21] == cells[i]) {
+          loser.push(cells[i])
+        }
+      }
+      //縦勝利判定
+      if (i < 40) {
+        if (cells[i + 8] == cells[i] && cells[i + 16] == cells[i] && cells[i + 24] == cells[i]) {
+          loser.push(cells[i])
+        }
+      }
+    }
+  }
+if (loser[0] == 1 - playerID) {
+    return true
+  }
+}
+
+
 function IsVictory(cells, playerID) {
   //左上から走査するので、右・下向きだけでOK
   if (loserFlag != null && loserFlag != playerID) {
@@ -62,7 +126,7 @@ function IsVictory(cells, playerID) {
 }
 
 // Return true if all `cells` are occupied.
-function IsDraw(cells) {
+export function IsDraw(cells) {
   return cells.filter(c => c === null).length === 0;
 }
 
@@ -139,7 +203,7 @@ function IsCellNull(cell) {
   const isNull = (item) => item == null
   return cell.every(isNull)
 }
-export function IsInvalidMove(cell, id, playerID, turn) {
+export function IsInvalidMove(cell, id, playerID) {
   if (IsCellNull(cell)) {
     //一番外周にはおけない
     if (id < 8) {
@@ -169,7 +233,10 @@ export function IsInvalidMove(cell, id, playerID, turn) {
 
 }
 
-function MovePieces(cell, id, playerID) {
+export function MovePieces(cell, id, playerID) {
+  loserFlag = null
+  cell[id] = playerID;
+  lastMove = id
   //上方向
   if (id > 15) {
     if (cell[id - 8] != null && cell[id - 8] != playerID && cell[id - 16] == null) {
@@ -201,7 +268,7 @@ function MovePieces(cell, id, playerID) {
 
 }
 
-export const TicTacToe = {
+export const Hedgehog = {
   setup: () => ({ cells: Array(64).fill(null) }),
 
   turn: {
@@ -213,12 +280,12 @@ export const TicTacToe = {
     clickCell: {
       move: ({ G, ctx, playerID }, id) => {
 
-        if (IsInvalidMove(G.cells, id, playerID, ctx.turn)) {
+        if (IsInvalidMove(G.cells, id, playerID)) {
           return INVALID_MOVE
         }
 
-        G.cells[id] = playerID;
-        lastMove = id
+        
+        
         MovePieces(G.cells, id, playerID)
         if(undoNum !=0){
           cellHistory.splice(ctx.turn - (totalUndo - undoNum) * 2 - undoNum*2)
@@ -229,6 +296,7 @@ export const TicTacToe = {
     },
     undo: {
       move: ({ G }) => {
+        loserFlag = null
         if (actualTurn - undoNum -1 < 0) {
           return INVALID_MOVE
         }
@@ -239,13 +307,14 @@ export const TicTacToe = {
     },
     redo: {
       move: ({ G }) => {
+        loserFlag = null
         if (undoNum - 1 < 0) {
           return INVALID_MOVE
         }
         undoNum -= 1
         G.cells = cellHistory[Math.max(actualTurn - undoNum, 0)]
       },
-    }
+    },
   },
 
   endIf: ({ G, ctx }) => {
@@ -258,13 +327,7 @@ export const TicTacToe = {
   },
   ai: {
     enumerate: (G, ctx) => {
-      let moves = [];
-      for (let i = 0; i < 64; i++) {
-        if (IsInvalidMove(G.cells, i, ctx.currentPlayer, ctx.turn) != true) {
-          moves.push({ move: 'clickCell', args: [i] });
-        }
-      }
-      return moves;
+      return PossibleMoves(G.cells,ctx.currentPlayer)
     }
   }
 };
