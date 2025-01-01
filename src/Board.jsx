@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
 import { NextCpu } from './NextCpu';
-import { IsInvalidMove, getLastMove, pushCellHistory, getCellHistory, actualTurn, } from './Game';
+import { IsInvalidMove, getLastMove, pushCellHistory, getCellHistory, actualTurn,resetCellHistory,resetAll } from './Game';
 let turn = 0;
 
 export function HedgehogBoard({ ctx, G, moves, reset }) {
@@ -29,6 +29,7 @@ export function HedgehogBoard({ ctx, G, moves, reset }) {
   }, [ctx, G, moves]);
 
   let winner = '';
+  let operations = '';
   if (ctx.gameover) {
     winner =
       ctx.gameover.winner !== undefined ? (
@@ -36,6 +37,31 @@ export function HedgehogBoard({ ctx, G, moves, reset }) {
       ) : (
         <div id="winner">Draw!</div>
       );
+
+      operations = (
+        <>
+        <button className="operation" onClick={() => {
+          reset()
+          moves.undo()
+          }}>←UNDO</button>
+        <button className="operation" onClick={() => {
+          moves.redo()
+          }}>REDO→</button>
+        <button className="operation" onClick={() => {
+          window.location.reload()
+          }}>RESET</button>
+        </>
+      )
+  }else{
+    operations = (
+      <>
+      <button className="operation" onClick={() => moves.undo()}>←UNDO</button>
+      <button className="operation" onClick={() => moves.redo()}>REDO→</button>
+      <button className="operation" onClick={() => {
+        window.location.reload()
+        }}>RESET</button>
+      </>
+    )
   }
 
   const cellStyle = {
@@ -76,6 +102,7 @@ export function HedgehogBoard({ ctx, G, moves, reset }) {
     }
     tbody.push(<tr key={i}>{cells}</tr>);
   }
+  
 
   return (
     <div>
@@ -98,10 +125,7 @@ export function HedgehogBoard({ ctx, G, moves, reset }) {
       <input type="number" value={iterations} onChange={(e) => setIterations(e.target.value)} />
       <br></br>
       <div id="operation_parent">
-        <button class="operation" onClick={() => moves.undo()}>←UNDO</button>
-        <button class="operation" onClick={() => moves.redo()}>REDO→</button>
-        <button class="operation" onClick={() => reset()}>RESET</button>
-
+      {operations}
       </div>
       <table id="board">
         <tbody>{tbody}</tbody>

@@ -7,6 +7,19 @@ let undoNum = 0
 let totalUndo = 0
 export let actualTurn = 0
 
+export function resetCellHistory() {
+  cellHistory = [Array(64).fill(null)]
+}
+
+export function resetAll() {
+  cellHistory = [Array(64).fill(null)]
+  totalUndo = 0
+  undoNum = 0
+  actualTurn = 0
+  lastMove = null
+  loserFlag = null
+}
+
 export function resetLoserFlag() {
   loserFlag = null
 }
