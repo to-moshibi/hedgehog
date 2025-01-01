@@ -1,11 +1,12 @@
 import React from 'react';
-import { getMCTSMove } from './Cpu';
+import { useState } from 'react';
 import { NextCpu } from './NextCpu';
 import { IsInvalidMove, getLastMove, pushCellHistory, getCellHistory, actualTurn,getWinner } from './Game';
 let turn = 0;
-export let cpu_id = 1;
 
 export function HedgehogBoard({ ctx, G, moves }) {
+  const [cpu_id, set_cpu_id] = useState(1);
+  const [iterations, setIterations] = useState(10000);
   const onClick = (id) => {
     moves.clickCell(id)
   };
@@ -17,7 +18,7 @@ export function HedgehogBoard({ ctx, G, moves }) {
           pushCellHistory(G.cells);
           if (ctx.currentPlayer == cpu_id) {
             if (!ctx.gameover) {
-              const move = NextCpu(cpu_id, 10000);
+              const move = NextCpu(cpu_id, iterations);
               moves.clickCell(move); // CPU move
             }
           }
@@ -31,7 +32,7 @@ export function HedgehogBoard({ ctx, G, moves }) {
   if (ctx.gameover) {
     winner =
       ctx.gameover.winner !== undefined ? (
-        <div id="winner">winner: {ctx.gameover.winner}</div>
+        <div id="winner">winner: {ctx.gameover.winner == cpu_id ? "CPU":"Player"}</div>
       ) : (
         <div id="winner">Draw!</div>
       );
@@ -75,9 +76,26 @@ export function HedgehogBoard({ ctx, G, moves }) {
     }
     tbody.push(<tr key={i}>{cells}</tr>);
   }
-
+  
   return (
     <div>
+      <label>CPU手番: </label>
+      <select name='cpu_id' value={cpu_id} onChange={(e) => {
+        set_cpu_id(e.target.value)
+        if (ctx.currentPlayer == e.target.value) {
+          if (!ctx.gameover) {
+            const move = NextCpu(e.target.value, 10000);
+            moves.clickCell(move); // CPU move
+          }
+        }
+        }}>
+        <option value={0}>先手</option>
+        <option value={1}>後手</option>
+      </select>
+      <br></br>
+      <label>反復回数: </label>
+      <input type="number" value={iterations} onChange={(e) => setIterations(e.target.value)} />
+      <br></br>
       <button onClick={() => moves.undo()}>UNDO</button>
       <button onClick={() => moves.redo()}>REDO</button>
       <table id="board">
