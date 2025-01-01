@@ -7,7 +7,9 @@ let undoNum = 0
 let totalUndo = 0
 export let actualTurn = 0
 
-
+export function resetLoserFlag() {
+  loserFlag = null
+}
 
 export function PossibleMoves(cell,currentPlayer){
   let moves = [];
@@ -30,15 +32,52 @@ export function getLastMove() {
   return lastMove
 }
 
-export function getWinner(cells) {
+export function getWinner(cells,playerID){
   
-  if(IsVictory(cells, cells[lastMove])){
-    loserFlag = null
-    return cells[lastMove]
-  }else if(loserFlag != null){
-    return 1-cells[lastMove]
+  if(CpuVictory(cells, playerID)){
+    return playerID
+  }
+  if(CpuVictory(cells, 1 - playerID)){  
+    return 1 - playerID
   }
   return -1
+}
+
+function CpuVictory(cells, playerID) {
+  
+  var loser = []
+  for (let i = 0; i < 64; i++) {
+    if (cells[i] != null) {
+      //真横勝利判定
+      if (i % 8 < 5) {
+        if (cells[i + 1] == cells[i] && cells[i + 2] == cells[i] && cells[i + 3] == cells[i]) {
+          loser.push(cells[i])
+        }
+      }
+      //斜め右下勝利判定
+      if (i % 8 < 5 && i < 40) {
+        if (cells[i + 9] == cells[i] && cells[i + 18] == cells[i] && cells[i + 27] == cells[i]) {
+          loser.push(cells[i])
+        }
+      }
+
+      //斜め左下勝利判定
+      if (i % 8 > 2 && i < 40) {
+        if (cells[i + 7] == cells[i] && cells[i + 14] == cells[i] && cells[i + 21] == cells[i]) {
+          loser.push(cells[i])
+        }
+      }
+      //縦勝利判定
+      if (i < 40) {
+        if (cells[i + 8] == cells[i] && cells[i + 16] == cells[i] && cells[i + 24] == cells[i]) {
+          loser.push(cells[i])
+        }
+      }
+    }
+  }
+if (loser[0] == 1 - playerID) {
+    return true
+  }
 }
 
 

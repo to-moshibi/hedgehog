@@ -1,4 +1,4 @@
-import { cellHistory, getWinner, IsDraw, PossibleMoves, MovePieces, actualTurn } from "./Game";
+import { cellHistory, getWinner, IsDraw, PossibleMoves, MovePieces, resetLoserFlag } from "./Game";
 import { MCTS } from "./Mcts";
 
 class HedgehogState {
@@ -8,7 +8,7 @@ class HedgehogState {
             playerID: playerID,
             gameOver: false,
             winner: -1,
-            moves: 0
+            moves: []
         }
     }
     getState() {
@@ -32,13 +32,16 @@ class HedgehogState {
         })
     }
     playMove(move) {
+        resetLoserFlag()
         MovePieces(this.state.cells, move, this.state.playerID)
+        if (getWinner(this.state.cells,this.state.playerID) != -1 || IsDraw(this.state.cells)) {
+            this.state.gameOver = true
+            this.state.winner = getWinner(this.state.cells,this.state.playerID)
+
+        }
+        
         this.state.playerID = 1 - this.state.playerID
         this.state.moves++
-        if (getWinner(this.state.cells) != -1 || IsDraw(this.state.cells)) {
-            this.state.gameOver = true
-            this.state.winner = getWinner(this.state.cells)
-        }
 
     }
     gameOver() {

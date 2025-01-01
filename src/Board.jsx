@@ -17,7 +17,7 @@ export function HedgehogBoard({ ctx, G, moves }) {
           pushCellHistory(G.cells);
           if (ctx.currentPlayer == cpu_id) {
             if (!ctx.gameover) {
-              const move = NextCpu(cpu_id, 2000);
+              const move = NextCpu(cpu_id, 10000);
               moves.clickCell(move); // CPU move
             }
           }

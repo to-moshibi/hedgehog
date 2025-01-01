@@ -28,7 +28,7 @@ class MCTS {
         const originalState = this.game.getState()
         const possibleMoves = this.game.moves()
         const root = new MCTSNode(possibleMoves, null)
-
+        
         for (let i = 0; i < this.iterations; i++){
             this.game.setState(originalState)
             const clonedState = this.game.cloneState()
@@ -46,7 +46,9 @@ class MCTS {
             let reward;
             if (this.game.winner() == -1)               {reward = 0 }
             else if (this.game.winner() == this.player) {reward = 1 }
-            else                                        {reward = -1}
+            else                                        {
+                reward = -1
+            }
             this.backprop(expandedNode, reward)
         }
 
@@ -66,9 +68,7 @@ class MCTS {
         return possibleMoves[maxIndex]
     }
     selectNode(root){
-
         const c = this.exploration
-
         while (root.numUnexpandedMoves == 0){
             let maxUBC = -Infinity
             let maxIndex = -1
@@ -96,6 +96,7 @@ class MCTS {
     }
 
     expandNode(node){
+
         if (this.game.gameOver()){
             return node
         }
@@ -146,6 +147,5 @@ class MCTS {
         return (wi/ni) + c * Math.sqrt(Math.log(Ni)/ni)
     }
 }
-
 
 export {MCTS}
