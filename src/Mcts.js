@@ -77,7 +77,6 @@ class MCTS {
                 const child = root.children[i]
                 const ni = child.visits
                 const wi = child.wins
-                console.log(wi/ni *100)
                 const ubc = this.computeUCB(wi,ni,c,Ni)
                 if (ubc > maxUBC){
                     maxUBC = ubc
