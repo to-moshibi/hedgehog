@@ -14,7 +14,7 @@ export default defineConfig({
         name: 'Hedgehog\'s dilemma',
         short_name: 'Hedgehog', 
         description: 'Hedgehog\'s dilemma をwebで再現しました。CPUと対戦できます。',
-        theme_color: '#ffffff',
+        theme_color: '#242424',
         icons: [
           {
             src: 'pwa-192x192.png',
