@@ -4,7 +4,7 @@ class MCTSNode {
         this.visits = 0
         this.wins = 0
         this.numUnexpandedMoves = moves.length
-        this.children = new Array(this.numUnexpandedMoves).fill(null) //temporary store move for debugging purposes
+        this.children = new Array(this.numUnexpandedMoves).fill(null) 
     }
 }
 
@@ -62,7 +62,7 @@ class MCTS {
                 maxIndex = i
             }
         }
-        
+
         this.game.setState(originalState)
         return possibleMoves[maxIndex]
     }

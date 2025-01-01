@@ -1,10 +1,10 @@
 import React from 'react';
 import { useState } from 'react';
 import { NextCpu } from './NextCpu';
-import { IsInvalidMove, getLastMove, pushCellHistory, getCellHistory, actualTurn,getWinner } from './Game';
+import { IsInvalidMove, getLastMove, pushCellHistory, getCellHistory, actualTurn, } from './Game';
 let turn = 0;
 
-export function HedgehogBoard({ ctx, G, moves }) {
+export function HedgehogBoard({ ctx, G, moves, reset }) {
   const [cpu_id, set_cpu_id] = useState(1);
   const [iterations, setIterations] = useState(10000);
   const onClick = (id) => {
@@ -19,7 +19,7 @@ export function HedgehogBoard({ ctx, G, moves }) {
           if (ctx.currentPlayer == cpu_id) {
             if (!ctx.gameover) {
               const move = NextCpu(cpu_id, iterations);
-              moves.clickCell(move); // CPU move
+              moves.clickCell(move);
             }
           }
         }
@@ -32,7 +32,7 @@ export function HedgehogBoard({ ctx, G, moves }) {
   if (ctx.gameover) {
     winner =
       ctx.gameover.winner !== undefined ? (
-        <div id="winner">winner: {ctx.gameover.winner == cpu_id ? "CPU":"Player"}</div>
+        <div id="winner">winner: {ctx.gameover.winner == cpu_id ? "CPU" : "Player"}</div>
       ) : (
         <div id="winner">Draw!</div>
       );
@@ -40,9 +40,9 @@ export function HedgehogBoard({ ctx, G, moves }) {
 
   const cellStyle = {
     border: '1px solid #555',
-    width: '50px',
-    height: '50px',
-    lineHeight: '50px',
+    width: '40px',
+    height: '40px',
+    lineHeight: '40px',
     textAlign: 'center',
   };
 
@@ -57,7 +57,7 @@ export function HedgehogBoard({ ctx, G, moves }) {
             {G.cells[id] ? (
               <div style={cellStyle} className={"color" + G.cells[id]} id="lastmove">{G.cells[id]}</div>
             ) : (
-              <button style={cellStyle} id={"cell"+id} onClick={() => onClick(id)} className={"prohibit" + IsInvalidMove(G.cells, id, ctx.currentPlayer)} />
+              <button style={cellStyle} id={"cell" + id} onClick={() => onClick(id)} className={"prohibit" + IsInvalidMove(G.cells, id, ctx.currentPlayer)} />
             )}
           </td>
         );
@@ -67,7 +67,7 @@ export function HedgehogBoard({ ctx, G, moves }) {
             {G.cells[id] ? (
               <div style={cellStyle} className={"color" + G.cells[id]} >{G.cells[id]}</div>
             ) : (
-              <button style={cellStyle} id={"cell"+id} onClick={() => onClick(id,this)} className={"prohibit" + IsInvalidMove(G.cells, id, ctx.currentPlayer)} />
+              <button style={cellStyle} id={"cell" + id} onClick={() => onClick(id, this)} className={"prohibit" + IsInvalidMove(G.cells, id, ctx.currentPlayer)} />
             )}
           </td>
         );
@@ -76,28 +76,33 @@ export function HedgehogBoard({ ctx, G, moves }) {
     }
     tbody.push(<tr key={i}>{cells}</tr>);
   }
-  
+
   return (
     <div>
-      <label>CPU手番: </label>
+      <label>CPU設定: </label>
       <select name='cpu_id' value={cpu_id} onChange={(e) => {
         set_cpu_id(e.target.value)
         if (ctx.currentPlayer == e.target.value) {
           if (!ctx.gameover) {
             const move = NextCpu(e.target.value, 10000);
-            moves.clickCell(move); // CPU move
+            moves.clickCell(move);
           }
         }
-        }}>
+      }}>
         <option value={0}>先手</option>
         <option value={1}>後手</option>
+        <option value={2}>なし</option>
       </select>
       <br></br>
       <label>反復回数: </label>
       <input type="number" value={iterations} onChange={(e) => setIterations(e.target.value)} />
       <br></br>
-      <button onClick={() => moves.undo()}>UNDO</button>
-      <button onClick={() => moves.redo()}>REDO</button>
+      <div id="operation_parent">
+        <button class="operation" onClick={() => moves.undo()}>←UNDO</button>
+        <button class="operation" onClick={() => moves.redo()}>REDO→</button>
+        <button class="operation" onClick={() => reset()}>RESET</button>
+
+      </div>
       <table id="board">
         <tbody>{tbody}</tbody>
       </table>

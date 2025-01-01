@@ -11,7 +11,7 @@ export function resetLoserFlag() {
   loserFlag = null
 }
 
-export function PossibleMoves(cell,currentPlayer){
+export function PossibleMoves(cell, currentPlayer) {
   let moves = [];
   for (let i = 0; i < 64; i++) {
     if (IsInvalidMove(cell, i, currentPlayer) != true) {
@@ -32,19 +32,19 @@ export function getLastMove() {
   return lastMove
 }
 
-export function getWinner(cells,playerID){
-  
-  if(CpuVictory(cells, playerID)){
+export function getWinner(cells, playerID) {
+
+  if (CpuVictory(cells, playerID)) {
     return playerID
   }
-  if(CpuVictory(cells, 1 - playerID)){  
+  if (CpuVictory(cells, 1 - playerID)) {
     return 1 - playerID
   }
   return -1
 }
 
 function CpuVictory(cells, playerID) {
-  
+
   var loser = []
   for (let i = 0; i < 64; i++) {
     if (cells[i] != null) {
@@ -75,7 +75,7 @@ function CpuVictory(cells, playerID) {
       }
     }
   }
-if (loser[0] == 1 - playerID) {
+  if (loser[0] == 1 - playerID) {
     return true
   }
 }
@@ -284,11 +284,11 @@ export const Hedgehog = {
           return INVALID_MOVE
         }
 
-        
-        
+
+
         MovePieces(G.cells, id, playerID)
-        if(undoNum !=0){
-          cellHistory.splice(ctx.turn - (totalUndo - undoNum) * 2 - undoNum*2)
+        if (undoNum != 0) {
+          cellHistory.splice(ctx.turn - (totalUndo - undoNum) * 2 - undoNum * 2)
         }
         undoNum = 0
         actualTurn = ctx.turn - (totalUndo - undoNum) * 2
@@ -297,7 +297,7 @@ export const Hedgehog = {
     undo: {
       move: ({ G }) => {
         loserFlag = null
-        if (actualTurn - undoNum -1 < 0) {
+        if (actualTurn - undoNum - 1 < 0) {
           return INVALID_MOVE
         }
         undoNum += 1
@@ -327,7 +327,7 @@ export const Hedgehog = {
   },
   ai: {
     enumerate: (G, ctx) => {
-      return PossibleMoves(G.cells,ctx.currentPlayer)
+      return PossibleMoves(G.cells, ctx.currentPlayer)
     }
   }
 };
