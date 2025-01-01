@@ -12,7 +12,13 @@ const App = () => (
   <div className='App'>
 
     <HedgehogClient />
-
+    <div>
+      <p>試行回数を増やすと強く、減らすと弱くなります<br/>
+      CPUのAIを作った人は3000でもあまり勝てません<br/>
+      増やしすぎると重くなるので注意してください
+      </p>
+      
+    </div>
     <div>
       <label>ルール</label>
 

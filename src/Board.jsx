@@ -6,7 +6,7 @@ let turn = 0;
 
 export function HedgehogBoard({ ctx, G, moves, reset }) {
   const [cpu_id, set_cpu_id] = useState(1);
-  const [iterations, setIterations] = useState(10000);
+  const [iterations, setIterations] = useState(3000);
   const onClick = (id) => {
     moves.clickCell(id)
   };
@@ -84,7 +84,7 @@ export function HedgehogBoard({ ctx, G, moves, reset }) {
         set_cpu_id(e.target.value)
         if (ctx.currentPlayer == e.target.value) {
           if (!ctx.gameover) {
-            const move = NextCpu(e.target.value, 10000);
+            const move = NextCpu(e.target.value, iterations);
             moves.clickCell(move);
           }
         }
@@ -94,7 +94,7 @@ export function HedgehogBoard({ ctx, G, moves, reset }) {
         <option value={2}>なし</option>
       </select>
       <br></br>
-      <label>反復回数: </label>
+      <label>試行回数: </label>
       <input type="number" value={iterations} onChange={(e) => setIterations(e.target.value)} />
       <br></br>
       <div id="operation_parent">
