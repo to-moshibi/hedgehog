@@ -30,14 +30,18 @@ export function getLastMove() {
   return lastMove
 }
 
-export function getWinner(cells, playerID) {
-  if(IsVictory(cells, playerID)){
-    return playerID
+export function getWinner(cells) {
+  
+  if(IsVictory(cells, cells[lastMove])){
+    loserFlag = null
+    return cells[lastMove]
   }else if(loserFlag != null){
-    return loserFlag === 0 ? 1 : 0
+    return 1-cells[lastMove]
   }
-  return false
+  return -1
 }
+
+
 function IsVictory(cells, playerID) {
   //左上から走査するので、右・下向きだけでOK
   if (loserFlag != null && loserFlag != playerID) {
@@ -193,6 +197,7 @@ export function IsInvalidMove(cell, id, playerID) {
 export function MovePieces(cell, id, playerID) {
   loserFlag = null
   cell[id] = playerID;
+  lastMove = id
   //上方向
   if (id > 15) {
     if (cell[id - 8] != null && cell[id - 8] != playerID && cell[id - 16] == null) {
@@ -241,7 +246,7 @@ export const Hedgehog = {
         }
 
         
-        lastMove = id
+        
         MovePieces(G.cells, id, playerID)
         if(undoNum !=0){
           cellHistory.splice(ctx.turn - (totalUndo - undoNum) * 2 - undoNum*2)

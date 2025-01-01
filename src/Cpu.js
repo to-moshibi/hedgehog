@@ -19,11 +19,11 @@ class HedgehogState {
     }
 
     isTerminal() {
-        return getWinner(this.cells, this.playerID) !== false || IsDraw(this.cells)
+        return getWinner(this.cells) != -1 || IsDraw(this.cells)
     }
 
     getWinner() {
-        return getWinner(this.cells, this.playerID)
+        return getWinner(this.cells)
     }
 
     getResult(player) {

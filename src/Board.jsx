@@ -1,6 +1,7 @@
 import React from 'react';
 import { getMCTSMove } from './Cpu';
-import { IsInvalidMove, getLastMove, pushCellHistory, getCellHistory, actualTurn } from './Game';
+import { NextCpu } from './NextCpu';
+import { IsInvalidMove, getLastMove, pushCellHistory, getCellHistory, actualTurn,getWinner } from './Game';
 let turn = 0;
 export let cpu_id = 1;
 
@@ -16,14 +17,13 @@ export function HedgehogBoard({ ctx, G, moves }) {
           pushCellHistory(G.cells);
           if (ctx.currentPlayer == cpu_id) {
             if (!ctx.gameover) {
-              const move = await getMCTSMove(cpu_id, 2000);
+              const move = NextCpu(cpu_id, 2000);
               moves.clickCell(move); // CPU move
             }
           }
         }
       }
     };
-
     makeCpuMove();
   }, [ctx, G, moves]);
 
