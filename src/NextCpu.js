@@ -59,6 +59,5 @@ export function NextCpu(playerID, iters) {
     const state = new HedgehogState(cellHistory[cellHistory.length - 1], playerID)
     const mcts = new MCTS(state, playerID, iters, exp)
     const move = mcts.selectMove()
-    console.log(move)
     return move
 }
