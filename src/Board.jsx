@@ -98,16 +98,17 @@ export function HedgehogBoard({ ctx, G, moves, reset }) {
               <div style={cellStyle} className={"color" + G.cells[id]} >{G.cells[id]}</div>
             ) : (
               <button style={cellStyle} id={"cell" + id} onClick={() => {
-                // if(ctx.gameover){
-                //   return
-                // }
+                if(ctx.gameover){
+                  return
+                }
                 document.getElementById("cell" + id).style.backgroundColor = ctx.currentPlayer == 0 ? "blue" : "orange"
                 document.getElementById("cell" + id).classList.remove("prohibitfalse")
                 document.getElementById("cell" + id).innerHTML = ctx.currentPlayer
                 setTimeout(() => {
                 onClick(id)
                 }, 100);
-              }} className={"prohibit" + IsInvalidMove(G.cells, id, ctx.currentPlayer)} />
+                console.log(ctx.gameover)
+              }} className={ctx.gameover == undefined?"prohibit"+IsInvalidMove(G.cells, id, ctx.currentPlayer):"prohibittrue"} />
             )}
           </td>
         );
