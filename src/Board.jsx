@@ -1,9 +1,17 @@
 import React from 'react';
 import { useState } from 'react';
 import { NextCpu } from './NextCpu';
-import { IsInvalidMove, getLastMove, pushCellHistory, getCellHistory, actualTurn,resetCellHistory,resetAll } from './Game';
+import { IsInvalidMove, getLastMove, pushCellHistory, getCellHistory, actualTurn,MovePieces } from './Game';
 let turn = 0;
-
+function findDivergence (a1, a2) {
+  var result = [], longerLength = a1.length >= a2.length ? a1.length : a2.length;
+  for (let i = 0; i < longerLength; i++){
+      if (a1[i] != a2[i]) {
+          result.push(i);
+      }
+  }
+  return result;
+};
 export function HedgehogBoard({ ctx, G, moves, reset }) {
   const [cpu_id, set_cpu_id] = useState(1);
   const [iterations, setIterations] = useState(3000);
@@ -65,37 +73,19 @@ export function HedgehogBoard({ ctx, G, moves, reset }) {
   }
 
   const cellStyle = {
-    border: '1px solid #555',
-    width: '40px',
-    height: '40px',
-    lineHeight: '40px',
-    textAlign: 'center',
-    borderRadius: "8px"
   };
+
+
 
   let tbody = [];
   for (let i = 0; i < 8; i++) {
     let cells = [];
     for (let j = 0; j < 8; j++) {
       const id = 8 * i + j;
-      if (id == getLastMove()) {
         cells.push(
           <td key={id}>
             {G.cells[id] ? (
-              <div style={cellStyle} className={"color" + G.cells[id]} id="lastmove">{G.cells[id]}</div>
-            ) : (
-              <button style={cellStyle} id={"cell" + id} onClick={() => {
-                document.getElementById("cell" + id).style.backgroundColor = "red"
-                onClick(id)
-              }} className={"prohibit" + IsInvalidMove(G.cells, id, ctx.currentPlayer)} />
-            )}
-          </td>
-        );
-      } else {
-        cells.push(
-          <td key={id}>
-            {G.cells[id] ? (
-              <div style={cellStyle} className={"color" + G.cells[id]} >{G.cells[id]}</div>
+              <div style={cellStyle} className={`${"color" + G.cells[id]} ${getLastMove() == id ? "color_red":""}`} id={"cell"+ id}>{G.cells[id]}</div>
             ) : (
               <button style={cellStyle} id={"cell" + id} onClick={() => {
                 if(ctx.gameover){
@@ -104,17 +94,36 @@ export function HedgehogBoard({ ctx, G, moves, reset }) {
                 if(IsInvalidMove(G.cells, id, ctx.currentPlayer)){
                   return
                 }
-                document.getElementById("cell" + id).style.backgroundColor = ctx.currentPlayer == 0 ? "blue" : "orange"
-                document.getElementById("cell" + id).classList.remove("prohibitfalse")
-                document.getElementById("cell" + id).innerHTML = ctx.currentPlayer
+                
+                for(let i = 0; i < 64; i++){
+                  document.getElementById("cell" + i).classList.remove("prohibitfalse")
+                }
+
+                let newCells = G.cells.slice(0);
+                MovePieces(newCells, id, ctx.currentPlayer)
+                const diffIndex = findDivergence(G.cells, newCells)
+                diffIndex.forEach((index) => {
+                  if(newCells[index] == null){
+                    document.getElementById("cell" + index).style.border = "1px solid #555"
+                    document.getElementById("cell" + index).style.backgroundColor = "#1a1a1a"
+                    document.getElementById("cell" + index).innerHTML = ""
+                  }else{
+                    console.log(newCells[index] == 0 ? "blue" : "orange")
+                    document.getElementById("cell" + index).style.backgroundColor = newCells[index] == 0 ? "blue" : "orange"
+                    document.getElementById("cell" + index).classList.remove("prohibitfalse")
+                    document.getElementById("cell" + index).innerHTML = new String(newCells[index])
+                  }
+                })
+                document.getElementById("cell" + id).style.color = "red"
+                console.log(diffIndex)
                 setTimeout(() => {
                 onClick(id)
-                }, 100);
+                }, 1000);
               }} className={ctx.gameover == undefined?"prohibit"+IsInvalidMove(G.cells, id, ctx.currentPlayer):"prohibittrue"} />
             )}
           </td>
         );
-      }
+      
 
     }
     tbody.push(<tr key={i}>{cells}</tr>);
