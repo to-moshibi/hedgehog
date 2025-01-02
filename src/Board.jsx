@@ -82,6 +82,8 @@ export function HedgehogBoard({ ctx, G, moves, reset }) {
     let cells = [];
     for (let j = 0; j < 8; j++) {
       const id = 8 * i + j;
+      console.log(id+": ")
+      console.log(ctx.gameover == undefined?"prohibit"+IsInvalidMove(G.cells, id, ctx.currentPlayer):"prohibittrue")
         cells.push(
           <td key={id}>
             {G.cells[id] ? (
@@ -95,9 +97,9 @@ export function HedgehogBoard({ ctx, G, moves, reset }) {
                   return
                 }
                 
-                for(let i = 0; i < 64; i++){
-                  document.getElementById("cell" + i).classList.remove("prohibitfalse")
-                }
+                // for(let i = 0; i < 64; i++){
+                //   document.getElementById("cell" + i).classList.remove("prohibitfalse")
+                // }
 
                 let newCells = G.cells.slice(0);
                 MovePieces(newCells, id, ctx.currentPlayer)
