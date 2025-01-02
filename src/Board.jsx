@@ -108,14 +108,12 @@ export function HedgehogBoard({ ctx, G, moves, reset }) {
                     document.getElementById("cell" + index).style.backgroundColor = "#1a1a1a"
                     document.getElementById("cell" + index).innerHTML = ""
                   }else{
-                    console.log(newCells[index] == 0 ? "blue" : "orange")
                     document.getElementById("cell" + index).style.backgroundColor = newCells[index] == 0 ? "blue" : "orange"
                     document.getElementById("cell" + index).classList.remove("prohibitfalse")
                     document.getElementById("cell" + index).innerHTML = new String(newCells[index])
                   }
                 })
                 document.getElementById("cell" + id).style.color = "red"
-                console.log(diffIndex)
                 setTimeout(() => {
                 onClick(id)
                 }, 100);
