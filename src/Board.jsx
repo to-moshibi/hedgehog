@@ -101,6 +101,9 @@ export function HedgehogBoard({ ctx, G, moves, reset }) {
                 if(ctx.gameover){
                   return
                 }
+                if(IsInvalidMove(G.cells, id, ctx.currentPlayer)){
+                  return
+                }
                 document.getElementById("cell" + id).style.backgroundColor = ctx.currentPlayer == 0 ? "blue" : "orange"
                 document.getElementById("cell" + id).classList.remove("prohibitfalse")
                 document.getElementById("cell" + id).innerHTML = ctx.currentPlayer
