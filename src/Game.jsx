@@ -8,6 +8,8 @@ let totalUndo = 0
 export let actualTurn = 0
 
 export function resetCellHistory() {
+  totalUndo = 0
+  undoNum = 0
   cellHistory = [Array(64).fill(null)]
 }
 
@@ -301,10 +303,11 @@ export const Hedgehog = {
 
         MovePieces(G.cells, id, playerID)
         if (undoNum != 0) {
-          cellHistory.splice(ctx.turn - (totalUndo - undoNum) * 2 - undoNum * 2)
+          cellHistory.splice(actualTurn - undoNum + 1)
+          actualTurn -= undoNum
+          undoNum = 0
         }
-        undoNum = 0
-        actualTurn = ctx.turn - (totalUndo - undoNum) * 2
+        actualTurn++
       },
     },
     undo: {
@@ -313,17 +316,20 @@ export const Hedgehog = {
         if (actualTurn - undoNum - 1 < 0) {
           return INVALID_MOVE
         }
+        
         undoNum += 1
         totalUndo += 1
         G.cells = cellHistory[Math.max(actualTurn - undoNum, 0)]
       },
     },
     redo: {
+      
       move: ({ G }) => {
         loserFlag = null
         if (undoNum - 1 < 0) {
           return INVALID_MOVE
         }
+        
         undoNum -= 1
         G.cells = cellHistory[Math.max(actualTurn - undoNum, 0)]
       },
