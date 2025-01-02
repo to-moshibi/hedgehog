@@ -118,7 +118,7 @@ export function HedgehogBoard({ ctx, G, moves, reset }) {
                 console.log(diffIndex)
                 setTimeout(() => {
                 onClick(id)
-                }, 1000);
+                }, 100);
               }} className={ctx.gameover == undefined?"prohibit"+IsInvalidMove(G.cells, id, ctx.currentPlayer):"prohibittrue"} />
             )}
           </td>
