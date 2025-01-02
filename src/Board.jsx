@@ -70,6 +70,7 @@ export function HedgehogBoard({ ctx, G, moves, reset }) {
     height: '40px',
     lineHeight: '40px',
     textAlign: 'center',
+    borderRadius: "8px"
   };
 
   let tbody = [];
@@ -83,7 +84,10 @@ export function HedgehogBoard({ ctx, G, moves, reset }) {
             {G.cells[id] ? (
               <div style={cellStyle} className={"color" + G.cells[id]} id="lastmove">{G.cells[id]}</div>
             ) : (
-              <button style={cellStyle} id={"cell" + id} onClick={() => onClick(id)} className={"prohibit" + IsInvalidMove(G.cells, id, ctx.currentPlayer)} />
+              <button style={cellStyle} id={"cell" + id} onClick={() => {
+                document.getElementById("cell" + id).style.backgroundColor = "red"
+                onClick(id)
+              }} className={"prohibit" + IsInvalidMove(G.cells, id, ctx.currentPlayer)} />
             )}
           </td>
         );
@@ -93,7 +97,17 @@ export function HedgehogBoard({ ctx, G, moves, reset }) {
             {G.cells[id] ? (
               <div style={cellStyle} className={"color" + G.cells[id]} >{G.cells[id]}</div>
             ) : (
-              <button style={cellStyle} id={"cell" + id} onClick={() => onClick(id, this)} className={"prohibit" + IsInvalidMove(G.cells, id, ctx.currentPlayer)} />
+              <button style={cellStyle} id={"cell" + id} onClick={() => {
+                // if(ctx.gameover){
+                //   return
+                // }
+                document.getElementById("cell" + id).style.backgroundColor = ctx.currentPlayer == 0 ? "blue" : "orange"
+                document.getElementById("cell" + id).classList.remove("prohibitfalse")
+                document.getElementById("cell" + id).innerHTML = ctx.currentPlayer
+                setTimeout(() => {
+                onClick(id)
+                }, 100);
+              }} className={"prohibit" + IsInvalidMove(G.cells, id, ctx.currentPlayer)} />
             )}
           </td>
         );
