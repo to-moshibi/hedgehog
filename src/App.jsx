@@ -35,7 +35,7 @@ const App = () => (
     <footer>
       <p>このゲームはVRChatのワールド<a href='https://vrchat.com/home/world/wrld_e8db4bf4-9da9-4dd4-9dc3-1cd56820f038/info'>ちはるーむ</a>様にあるボードゲーム、"Hedgehog's dilemma"です</p>
       <p>非公式のWeb移植ですので、クレームや要望はtomoshibi.neko@gmailまでお願いします。</p>
-      <p>このゲームを制作された<a href='https://x.com/IzzyVRC'>いじー</a>様、<a href='https://x.com/oha_oha_Ohashi'>フライングオニオオハシ</a>さんに心より感謝いたします。</p>
+      <p>このゲームを制作された<a href='https://x.com/IzzyVRC'>いじー</a>様、<a href='https://x.com/oha_oha_Ohashi'>フライングオニオオハシ</a>様に心より感謝いたします。</p>
 
 
 
