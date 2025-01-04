@@ -40,7 +40,6 @@ class HedgehogState {
         })
        }
         return moves
-
     }
     playMove(move) {
         resetLoserFlag()

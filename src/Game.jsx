@@ -7,6 +7,13 @@ let undoNum = 0
 let totalUndo = 0
 export let actualTurn = 0
 
+export let Record ={
+  "blue player name": "Unknown",
+  "orange player name": "Unknown",
+  "record" :[
+  ]
+}
+
 export function resetCellHistory() {
   totalUndo = 0
   undoNum = 0
@@ -304,9 +311,11 @@ export const Hedgehog = {
         MovePieces(G.cells, id, playerID)
         if (undoNum != 0) {
           cellHistory.splice(actualTurn - undoNum + 1)
+          Record.record.splice(actualTurn - undoNum)
           actualTurn -= undoNum
           undoNum = 0
         }
+        Record.record.push(id)
         actualTurn++
       },
     },

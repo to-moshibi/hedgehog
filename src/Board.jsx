@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
 import { NextCpu } from './NextCpu';
-import { IsInvalidMove, getLastMove, pushCellHistory, getCellHistory, actualTurn,MovePieces } from './Game';
+import { IsInvalidMove, getLastMove, pushCellHistory, getCellHistory, actualTurn,MovePieces, Record } from './Game';
 let turn = 0;
 function findDivergence (a1, a2) {
   var result = [], longerLength = a1.length >= a2.length ? a1.length : a2.length;
@@ -32,6 +32,8 @@ export function HedgehogBoard({ ctx, G, moves, reset }) {
               //auto
               // const move = NextCpu(ctx.currentPlayer, iterations);
               moves.clickCell(move);
+            }else{
+
             }
           }
         }
@@ -62,6 +64,16 @@ export function HedgehogBoard({ ctx, G, moves, reset }) {
         <button className="operation" onClick={() => {
           window.location.reload()
           }}>RESET</button>
+        <button className="operation" id="record_copy" onClick={() => {
+          navigator.clipboard.writeText(JSON.stringify(Record))
+          let copybutton = document.getElementById("record_copy")
+          copybutton.innerHTML = "COPIED!"
+          copybutton.style.backgroundColor = "green"
+          setTimeout(() => {
+            document.getElementById("record_copy").innerHTML = "RECORD"
+            document.getElementById("record_copy").style.backgroundColor = "#464646"
+          }, 2500);
+        }}>RECORD</button>
         </>
       )
   }else{
