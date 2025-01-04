@@ -1,6 +1,6 @@
 import React from 'react';
 import { Client } from 'boardgame.io/react';
-import { Hedgehog, Record } from './Game';
+import { Hedgehog } from './Game';
 import { HedgehogBoard } from './Board';
 
 export const HedgehogClient = Client({
@@ -32,11 +32,6 @@ function App(){
           <li>どこにおいても相手が動かない場合、相手の隣ならコマをどこでも置くことができます</li>
           <li>コマを置いたときに、自分のコマが4つ揃った場合はコマを置いた人が敗北します</li>
         </ul>
-      </div>
-      <div>
-        <code>
-          {JSON.stringify(Record)}
-        </code>
       </div>
       <footer>
         <p>このゲームはVRChatのワールド<a href='https://vrchat.com/home/world/wrld_e8db4bf4-9da9-4dd4-9dc3-1cd56820f038/info'>ちはるーむ</a>様にあるボードゲーム、"Hedgehog's dilemma"です</p>
