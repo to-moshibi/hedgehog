@@ -14,6 +14,19 @@ export let Record ={
   ]
 }
 
+export function playRecord(record) {
+  let cells = Array(64).fill(null)
+  cellHistory = [Array(64).fill(null)]
+  actualTurn = 0
+  undoNum = 0
+  record.forEach((id) => {
+    MovePieces(cells, id, String(actualTurn % 2))
+    cellHistory.push(cells.slice())
+    lastMove = id
+    actualTurn++
+  })
+}
+
 export function resetCellHistory() {
   totalUndo = 0
   undoNum = 0
@@ -27,6 +40,12 @@ export function resetAll() {
   actualTurn = 0
   lastMove = null
   loserFlag = null
+  Record ={
+    "blue player name": "Unknown",
+    "orange player name": "Unknown",
+    "record" :[
+    ]
+  }
 }
 
 export function resetLoserFlag() {
@@ -343,6 +362,7 @@ export const Hedgehog = {
         G.cells = cellHistory[Math.max(actualTurn - undoNum, 0)]
       },
     },
+    skip: ()=>{}
   },
 
   endIf: ({ G, ctx }) => {

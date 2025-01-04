@@ -135,3 +135,23 @@ td div{
 .color_red{
   color: red;
 }
+
+textarea {
+  width: 80%;
+  height: 100px;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #555;
+  resize: none;
+  background-color: #242424;
+}
+label {
+  vertical-align: top;
+}
+#record_import{
+  
+  margin-left:auto;
+  padding: .2em .4em;
+  border: 1px solid #555;
+  background-color: #464646;
+}
