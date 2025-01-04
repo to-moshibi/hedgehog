@@ -34,13 +34,12 @@ class HedgehogState {
     playMove(move) {
         resetLoserFlag()
         MovePieces(this.state.cells, move, this.state.playerID)
+        this.state.playerID = 1 - this.state.playerID
         if (getWinner(this.state.cells, this.state.playerID) != -1 || IsDraw(this.state.cells)) {
             this.state.gameOver = true
             this.state.winner = getWinner(this.state.cells, this.state.playerID)
-
         }
 
-        this.state.playerID = 1 - this.state.playerID
         this.state.moves++
 
     }

@@ -82,8 +82,6 @@ export function HedgehogBoard({ ctx, G, moves, reset }) {
     let cells = [];
     for (let j = 0; j < 8; j++) {
       const id = 8 * i + j;
-      console.log(id+": ")
-      console.log(ctx.gameover == undefined?"prohibit"+IsInvalidMove(G.cells, id, ctx.currentPlayer):"prohibittrue")
         cells.push(
           <td key={id}>
             {G.cells[id] ? (
