@@ -27,9 +27,20 @@ class HedgehogState {
         }
     }
     moves() {
-        return PossibleMoves(this.state.cells, this.state.playerID).map(cell => {
+        let moves = PossibleMoves(this.state.cells, this.state.playerID).map(cell =>{
+            return cell.args[0]
+        }).filter(cell =>{
+            let newCells = this.state.cells.slice()
+            newCells[cell] = this.state.playerID
+            return getWinner(newCells, this.state.playerID) != 1-this.state.playerID
+       })
+       if(moves.length == 0){
+           return PossibleMoves(this.state.cells, this.state.playerID).map(cell =>{
             return cell.args[0]
         })
+       }
+        return moves
+
     }
     playMove(move) {
         resetLoserFlag()

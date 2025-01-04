@@ -24,9 +24,13 @@ export function HedgehogBoard({ ctx, G, moves, reset }) {
         var cellHistory = getCellHistory();
         if (cellHistory[cellHistory.length - 1] !== G.cells) {
           pushCellHistory(G.cells);
-          if (ctx.currentPlayer == cpu_id) {
+          // if (ctx.currentPlayer == cpu_id) {
+          //auto
+          if (true) {
             if (!ctx.gameover) {
-              const move = NextCpu(cpu_id, iterations);
+              // const move = NextCpu(cpu_id, iterations);
+              //auto
+              const move = NextCpu(ctx.currentPlayer, iterations);
               moves.clickCell(move);
             }
           }
