@@ -10,6 +10,9 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png'],
       injectRegister: 'auto', 
+      workbox: {
+        maximumFileSizeToCacheInBytes: 500000000
+      },
       manifest: {
         name: 'Hedgehog\'s dilemma',
         short_name: 'Hedgehog', 
