@@ -2,8 +2,12 @@ import React from 'react';
 import { useState } from 'react';
 import { NextCpu } from './NextCpu';
 import { resetAll, IsInvalidMove, getLastMove, pushCellHistory, getCellHistory, actualTurn, MovePieces, Record, cellHistory } from './Game';
+import json from './data/tree.json'
 
 let turn = 0;
+let winRatioRecord = []
+let winRatioArray = []
+let stack = []
 
 
 function playRecord(record, reset, moves, set_cpu_id) {
@@ -34,8 +38,14 @@ export function HedgehogBoard({ ctx, G, moves, reset }) {
     moves.clickCell(id)
   };
   React.useEffect(() => {
+    for(let i = 0; i < 64; i++){
+      if(document.getElementById("cell" + i).textContent.includes("%")){
+        document.getElementById("cell" + i).textContent = ""
+    }
+  }
     const makeCpuMove = async () => {
       if (CheckChangeTurn(actualTurn)) {
+
         var cellHistory = getCellHistory();
         if (cellHistory[cellHistory.length - 1] !== G.cells) {
           pushCellHistory(G.cells);
@@ -51,6 +61,7 @@ export function HedgehogBoard({ ctx, G, moves, reset }) {
 
             }
           }
+          winRatioRecord =Record.record
         }
       }
     };
@@ -95,8 +106,16 @@ export function HedgehogBoard({ ctx, G, moves, reset }) {
   } else {
     operations = (
       <>
-        <button className="operation" onClick={() => moves.undo()}>←UNDO</button>
-        <button className="operation" onClick={() => moves.redo()}>REDO→</button>
+        <button className="operation" onClick={() => {
+          moves.undo()
+          stack.push(winRatioRecord[winRatioRecord.length - 1])
+          winRatioRecord = winRatioRecord.slice(0, winRatioRecord.length - 1)
+          }}>←UNDO</button>
+        <button className="operation" onClick={() => {
+          moves.redo()
+          winRatioRecord.push(stack[stack.length - 1])
+          stack = stack.slice(0, stack.length - 1)
+          }}>REDO→</button>
         <button className="operation" onClick={() => {
           window.location.reload()
         }}>RESET</button>
@@ -160,7 +179,7 @@ export function HedgehogBoard({ ctx, G, moves, reset }) {
               setTimeout(() => {
                 onClick(id)
               }, 100);
-            }} className={ctx.gameover == undefined ? "prohibit" + IsInvalidMove(G.cells, id, ctx.currentPlayer) : "prohibittrue"} />
+            }} className={ctx.gameover == undefined ? "prohibit" + IsInvalidMove(G.cells, id, ctx.currentPlayer) : "prohibittrue"} ></button>
           )}
         </td>
       );
@@ -203,6 +222,12 @@ export function HedgehogBoard({ ctx, G, moves, reset }) {
       <table id="board">
         <tbody>{tbody}</tbody>
       </table>
+      <button id="win_ratio" onClick={() => {
+        winRatioArray = CheckWinRatio(winRatioRecord)
+        winRatioArray.forEach((element) => {
+          document.getElementById("cell" + element.move).textContent = element.win
+        })
+      }}>勝率予測(β)</button>
       {winner}
     </div>
   );
@@ -215,3 +240,23 @@ export function HedgehogBoard({ ctx, G, moves, reset }) {
     return false
   }
 }
+
+function CheckWinRatio(record) {
+  let result = []
+  let tree = json
+  for (const move in record) {
+    tree = tree.children.find(child => child.move == Record.record[move])
+    if (tree == undefined) {
+      return
+    }
+  }
+  if (tree == undefined) {
+    return
+  }
+  tree.children.forEach((child) => {
+    let win = ((1 - (child.wins / child.visit))*100).toFixed(1) + "%"
+    result.push({ move: child.move, win: win })
+  })
+  return result
+}
+
